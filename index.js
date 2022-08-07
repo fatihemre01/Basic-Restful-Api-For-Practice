@@ -3,26 +3,25 @@ const app = express();
 app.use(express.json());
 const Joi = require("joi");
 
-
+//Mini database
 const courses = [
     {id: 1, name: "course1"},
     {id: 2, name: "course2"}
 ]
 
-app.get("/api/courses/:id", (req, res) => {
-    const course = courses.find(c => c.id === parseInt(req.params.id));
-    if(!course) res.status(404).send("Bulunamadı");
-    res.send(course);
-})
-
 app.get("/api/courses/", (req, res) => {
     res.send(courses);
+})
+
+app.get("/api/courses/:id", (req, res) => {
+    const course = courses.find(c => c.id === parseInt(req.params.id));
+    if(!course) res.status(404).send("Not Found");
+    res.send(course);
 })
 
 app.post("/api/courses/", (req, res) => {
 
     const { error } = validateCourse(req.body.name);
-
 
     if(error) return res.status(400).send(error.message);
 
@@ -35,9 +34,6 @@ app.post("/api/courses/", (req, res) => {
     res.send(course);
 })
 
-
-
-// Put method
 app.put("/api/courses/:id", (req, res) => {
     const course = courses.find(c => c.id === parseInt(req.params.id));
     if(!course) return res.status(404).send("Not found"); 
@@ -51,10 +47,6 @@ app.put("/api/courses/:id", (req, res) => {
     res.send(course);
 })
 
-
-
-
-//Delete method
 app.delete("/api/courses/:id", (req, res) => {
     const course = courses.find(c => c.id === parseInt(req.params.id));
     if(!course) return res.status(404).send("Not found"); 
@@ -67,7 +59,6 @@ app.delete("/api/courses/:id", (req, res) => {
 
 })
 
-
 //Reusable Validate Function
 function validateCourse(course) {
     const schema = Joi.object({
@@ -78,10 +69,7 @@ function validateCourse(course) {
     });
 
     return schema.validate({name: course})
-
 }
-
-
 
 // Port Listening
 const port = process.env.PORT || 3000;
